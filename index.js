@@ -102,4 +102,15 @@ app.get("/transactions", async (req, res) => {
     }
 })
 
+app.delete("/logout", async (req, res) => {
+    const token = req.headers.authorization.replace("Bearer ", "");
+
+    try {
+        await db.collection("sessions").deleteOne({token});
+        return res.status(200).send("Sessão finalizada com sucesso!")
+    } catch (error) {
+        return (error.response.data);
+    }
+})
+
 app.listen(5000, () => console.log("Listening at 5000"))
