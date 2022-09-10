@@ -1,2 +1,5 @@
-#no_push
+#directories
 /node_modules
+
+#files
+.env
