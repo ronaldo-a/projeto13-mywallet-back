@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
+import Joi from "joi";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
 import { MongoClient } from "mongodb";
@@ -11,6 +12,24 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+const signUpSchema = Joi.object({
+    name: Joi.string().empty(" ").required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().empty(" ").required()
+});
+
+const signInSchema = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().empty(" ").required()
+});
+
+const transactionSchema = Joi.object({
+    date: Joi.string().required(),
+    description: Joi.string().empty(" ").required(),
+    value: Joi.number().required(),
+    type: Joi.string().required() 
+})
+
 const mongoClient = new MongoClient("mongodb://localhost:27017");
 let db;
 
@@ -18,12 +37,15 @@ mongoClient.connect().then(() => {
 	db = mongoClient.db("testeFull");
 });
 
-
 app.post("/signup", async (req, res) => {
-    const {name, email, password} = req.body;
-    if (!name || !email || !password) {
-        return res.status(422).send("Dados incompletos");
+
+    const validation = signUpSchema.validate(req.body, { abortEarly: false});
+    if (validation.error) {
+        const message = validation.error.details.map((detail) => detail.message)
+        return res.status(422).send(message);
     }
+    
+    const {name, email, password} = req.body;
 
     const encryptedPassword = bcrypt.hashSync(password, 10);
 
@@ -37,6 +59,12 @@ app.post("/signup", async (req, res) => {
 })
 
 app.post("/signin", async (req, res) => {
+    const validation = signInSchema.validate(req.body, {abortEarly: false});
+    if (validation.error) {
+        const message = validation.error.details.map((detail) => detail.message)
+        return res.status(422).send(message);
+    }
+
     const {email, password} = req.body;
 
     try {
@@ -59,6 +87,12 @@ app.post("/signin", async (req, res) => {
 })
 
 app.post("/transactions", async (req, res) => {
+    const validation = transactionSchema.validate(req.body, {abortEarly: false})
+    if (validation.error) {
+        const message = validation.error.details.map((detail) => detail.message);
+        return res.status(422).send(message);
+    }
+
     const {date, description, value, type} = req.body;
     const token = req.headers.authorization?.replace("Bearer ", "");
     if (!token) {
