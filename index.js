@@ -59,14 +59,33 @@ app.post("/signin", async (req, res) => {
 
 app.post("/transactions", async (req, res) => {
     const {date, description, value, type} = req.body;
-    //const { authorization } = req.header;
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    if (!token) {
+        return res.status(401).send("Usuário não autenticado!");
+    }
 
-    if (!date && !description && !value && !type) {
+    if (!date || !description || !value || !type) {
         return res.status(422).send("Dados incompletos");
     }
 
+    let user;
     try {
-        await db.collection("transactions").insertOne({date, description, value, type});
+        const session = await db.collection("sessions").findOne({token});
+        if (!session) {
+            return res.status(401).send("Favor logar novamente!");
+        }
+        
+        user = await db.collection("users").findOne({_id: session.userId});
+        if (!user) {
+            return res.status(401).send("Favor logar novamente!");
+        }
+    } catch (error) {
+        return res.send(error.response.data);
+    }
+
+    
+    try {
+        await db.collection("transactions").insertOne({date, description, value, type, userId: user._id});
         return res.status(201).send("Transação adicionada com sucesso!");
 
     } catch (error) {
