@@ -44,9 +44,10 @@ app.post("/signin", async (req, res) => {
         
         if (isUser.length !== 0) {
             if (bcrypt.compareSync(password, isUser[0].encryptedPassword)) {
-                const token = uuid(); 
+                const token = uuid();
+                const userName = isUser[0].name 
                 await db.collection("sessions").insertOne({userId: isUser[0]._id, token});
-                return res.status(200).send(token);
+                return res.status(200).send({token, userName});
             }
         }
 
@@ -109,7 +110,7 @@ app.get("/transactions", async (req, res) => {
 
     try {
         if (user) {
-            const transactions = await db.collection("transactions").find().toArray();
+            const transactions = await db.collection("transactions").find({userId: user._id}).toArray();
             if (transactions.length !== 0) {
                 return res.send(transactions);
             }
