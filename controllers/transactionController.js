@@ -1,4 +1,4 @@
-import db from "../index.js";
+import db from "../db.js";
 
 export async function createTransaction (req, res) {
 

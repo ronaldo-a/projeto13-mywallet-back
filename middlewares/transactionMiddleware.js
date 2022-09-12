@@ -3,7 +3,7 @@ import Joi from "joi";
 const transactionSchema = Joi.object({
     date: Joi.string().required(),
     description: Joi.string().empty(" ").required(),
-    value: Joi.number().precision(2).positive().required(),
+    value: Joi.number().required(),
     type: Joi.string().required() 
 });
 

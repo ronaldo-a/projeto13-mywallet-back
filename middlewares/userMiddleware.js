@@ -1,5 +1,5 @@
 import Joi from "joi";
-import db from "../index.js";
+import db from "../db.js";
 
 const signUpSchema = Joi.object({
     name: Joi.string().empty(" ").required(),

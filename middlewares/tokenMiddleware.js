@@ -1,4 +1,4 @@
-import db from "../index.js";
+import db from "../db.js";
 
 async function validateToken (req, res, next) {
     const token = req.headers.authorization?.replace("Bearer ", "");
