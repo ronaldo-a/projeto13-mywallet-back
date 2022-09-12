@@ -26,6 +26,11 @@ export async function userLogin (req, res) {
         
         if (isUser.length !== 0) {
             if (bcrypt.compareSync(password, isUser[0].encryptedPassword)) {
+                const oldSession = await db.collection("sessions").findOne({userId: isUser[0]._id});
+                if (oldSession) {
+                    await db.collection("sessions").deleteOne({userId: isUser[0]._id});
+                }
+
                 const token = uuid();
                 const userName = isUser[0].name 
                 await db.collection("sessions").insertOne({userId: isUser[0]._id, token});
