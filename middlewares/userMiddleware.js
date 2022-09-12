@@ -1,4 +1,5 @@
 import Joi from "joi";
+import db from "../index.js";
 
 const signUpSchema = Joi.object({
     name: Joi.string().empty(" ").required(),
@@ -17,6 +18,13 @@ async function validateNewUser (req, res, next) {
         const message = validation.error.details.map((detail) => detail.message)
         return res.status(422).send(message);
     }
+
+    const {email} = req.body;
+
+    const isEmailUsed = await db.collection("users").findOne({email});
+    if (isEmailUsed) {
+        return res.status(422).send("Email já cadastrado!");
+    } 
 
     next();
 }

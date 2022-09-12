@@ -8,6 +8,7 @@ export async function createTransaction (req, res) {
     }
     
     const user = res.locals.user;
+    
     try {
         await db.collection("transactions").insertOne({date, description, value, type, userId: user._id});
         return res.status(201).send("Transação adicionada com sucesso!");
@@ -20,7 +21,6 @@ export async function createTransaction (req, res) {
 export async function getTransactions (req, res) {
 
     const user = res.locals.user;
-    console.log(user);
     try {
         const transactions = await db.collection("transactions").find({userId: user._id}).toArray();
         if (transactions.length !== 0) {

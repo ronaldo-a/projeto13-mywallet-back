@@ -13,7 +13,7 @@ try {
     await mongoClient.connect();
     db = mongoClient.db("testeFull");
 } catch (error) {
-    console.log(error.response.data);
+    console.log(error.response);
 }
 
 const app = express();
