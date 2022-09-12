@@ -8,7 +8,7 @@ let db;
 
 try {
     await mongoClient.connect();
-    db = mongoClient.db("testeFull");
+    db = mongoClient.db("myWallet");
 } catch (error) {
     console.log(error.response);
 }
