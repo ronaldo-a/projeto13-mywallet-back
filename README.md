@@ -21,7 +21,7 @@ Back-end for MyWallet app. You can find the app front-end here: https://github.c
 <h3>How to run</h3>
   
   1. You need to connect to a running MongoDB server to run this app.
-    
+    1.1: To connect the app with the database, in your .env file, set the variable MONGO_URI with your mongoDB server uri.
 
   2. Clone this repository
   3. Install all dependencies
@@ -33,5 +33,5 @@ Back-end for MyWallet app. You can find the app front-end here: https://github.c
   3. Run app
   
       ```bash
-        npm start
+        node index.js
       ```
