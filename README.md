@@ -16,7 +16,7 @@ Back-end for MyWallet app. You can find the app front-end here: https://github.c
  
  <h3>Technologies</h3>
  
- Node.js, Express, Joi, Bcrypt and MongoDB.  
+ Node.js, Express, Joi, Bcrypt, uuid and MongoDB.  
 
 <h3>How to run</h3>
   
